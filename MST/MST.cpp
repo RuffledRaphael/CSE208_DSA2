@@ -29,6 +29,8 @@ public:
 
     ~Graph(){
         delete[] visited;
+        delete[] key;
+        delete[] parent;
         delete[] adj;
     }
 
