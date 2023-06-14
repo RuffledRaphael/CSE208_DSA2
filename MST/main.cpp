@@ -17,25 +17,23 @@ int main(){
     int V,E;
     in>>V;
     in>>E;
-
-    //cout<<V<<" "<<E;
+    
     Graph graph(V,E);
    
     for(int i=0; i<E; i++){
-        //cout<<"step3";
+        
         int F,S,W;
         in>>F;
         in>>S;
         in>>W;
-        //cout<<K<<" "<<P;
         graph.setEdge(F,S,W);        
-        //cout<<"step";
     }
-    //cout<<"on";
+
     out1<<graph.prim(0);
     out2<<graph.kruskal();
 
     in.close();
     out1.close();
+
     return 0;
 }

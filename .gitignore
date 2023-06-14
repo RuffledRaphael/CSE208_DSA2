@@ -1,0 +1,9 @@
+*.txt
+*.png
+*.exe
+*.pdf
+*.zip
+/.dist
+/.vscode
+/Testcases
+/practice

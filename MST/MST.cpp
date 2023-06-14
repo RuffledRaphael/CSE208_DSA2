@@ -12,10 +12,11 @@ private:
     int totalVertex;
     int totalEdge;
     int *visited;
-
+    
     int find(int x);
     void unionSet(int x, int y);
     bool isDisjoint(int x, int y);
+
 public:
     Graph(int v, int e){
         totalVertex= v;
@@ -35,28 +36,26 @@ public:
     }
 
     void setEdge(int v1, int v2, int w);
-    //int getV(){return totalVertex;};
     void init();
-
 
     string prim(int root);
     string kruskal();
-
 };
 
 int Graph::find(int x)
 {
-    if( parent[x]!=-1)
+    if( parent[x]>-1)
         return find(parent[x]);
     else 
         return x;
 }
 
 void Graph::unionSet(int x, int y)
-{   
-    if(isDisjoint(x,y))
+{  
+    if(isDisjoint(x,y)){
+        parent[find(x)]+= parent[find(y)];
         parent[find(y)]= find(x);
-        return;
+    }
 
     return;
 }
@@ -154,6 +153,6 @@ string Graph::kruskal()
 
     printable= "Kruskal's algorithm:\nTotal weight = "+ to_string(cost)+"\n"+ printable+"\n";
     cout<<"\n"<<printable;
-    
+
     return printable;
 }
