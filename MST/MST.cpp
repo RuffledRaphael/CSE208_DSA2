@@ -5,9 +5,9 @@ using namespace std;
 class Graph{
 private:
     vector<int> *adj;
-    map < pair<int,int>, int> weight;
-    priority_queue< pair<int, pair<int,int>> , vector<pair<int, pair<int,int>>> , greater<pair<int, pair<int,int>>> >edgeQ;
-    int *key;
+    map < pair<int,int>, double> weight;
+    priority_queue< pair<double, pair<int,int>> , vector<pair<double, pair<int,int>>> , greater<pair<double, pair<int,int>>> >edgeQ;
+    double *key;
     int *parent;
     int totalVertex;
     int totalEdge;
@@ -22,7 +22,7 @@ public:
         totalVertex= v;
         totalEdge = e;
         visited= new int [totalVertex];
-        key= new int [totalVertex];
+        key= new double [totalVertex];
         parent = new int [totalVertex];
         adj = new vector<int> [totalVertex];
         init();
@@ -35,7 +35,7 @@ public:
         delete[] adj;
     }
 
-    void setEdge(int v1, int v2, int w);
+    void setEdge(int v1, int v2, double w);
     void init();
 
     string prim(int root);
@@ -68,7 +68,7 @@ bool Graph::isDisjoint(int x, int y)
         return true;
 }
 
-void Graph::setEdge(int v1, int v2, int w)
+void Graph::setEdge(int v1, int v2, double w)
 {
     adj[v1].push_back(v2);
     adj[v2].push_back(v1);
@@ -81,7 +81,7 @@ void Graph::setEdge(int v1, int v2, int w)
 void Graph::init()
 {
     for (int i=0; i<totalVertex; i++){
-        key[i]=2147483645;
+        key[i]=1.7e300;
         parent[i]=-1;
         visited[i]=0;
     }
@@ -90,10 +90,11 @@ void Graph::init()
 string Graph::prim(int root)
 {
     string printable="Prim's algorithm:\n";
-    int cost=0;
-    priority_queue< pair<int,int> , vector<pair<int,int>> , greater<pair<int,int>> > vertexQ;
+    double cost=0;
+    priority_queue< pair<double,int> , vector<pair<double,int>> , greater<pair<double,int>> > vertexQ;
     init();
-    int u,d; 
+    int u;
+    double d; 
     key[root]=0;
 
     vertexQ.push({key[root], root});
@@ -127,7 +128,7 @@ string Graph::prim(int root)
         else
             printable+= to_string(parent[i])+ " "+ to_string(i)+"\n";
     }
-    cout<<"\n"<<printable;
+    //cout<<"\n"<<printable;
 
     return printable;
 }
@@ -135,10 +136,11 @@ string Graph::prim(int root)
 string Graph::kruskal()
 {   
     string printable="";
-    int cost=0;
+    double cost=0;
     
     init();
-    int x,y,t;
+    int x,y;
+    double t;
     while(!edgeQ.empty()){
         x= edgeQ.top().second.first;
         y= edgeQ.top().second.second;
@@ -152,7 +154,7 @@ string Graph::kruskal()
     }
 
     printable= "Kruskal's algorithm:\nTotal weight = "+ to_string(cost)+"\n"+ printable+"\n";
-    cout<<"\n"<<printable;
+    //cout<<"\n"<<printable;
 
     return printable;
 }

@@ -22,11 +22,12 @@ int main(){
    
     for(int i=0; i<E; i++){
         
-        int F,S,W;
-        in>>F;
-        in>>S;
-        in>>W;
-        graph.setEdge(F,S,W);        
+        int f,s;
+        double w;
+        in>>f;
+        in>>s;
+        in>>w;
+        graph.setEdge(f,s,w);        
     }
 
     out1<<graph.prim(0);
