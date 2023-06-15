@@ -44,10 +44,13 @@ public:
 
 int Graph::find(int x)
 {
-    if( parent[x]>-1)
-        return find(parent[x]);
-    else 
+    if( parent[x]>-1){
+        parent[x]= find(parent[x]);
+        return parent[x];
+    }
+    else {
         return x;
+    }
 }
 
 void Graph::unionSet(int x, int y)
