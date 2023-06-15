@@ -33,7 +33,7 @@ public:
     void setEdge(int v1, int v2, int w);
     void init();
 
-    string djikstra(int s, int d);
+    string dijkstra(int s, int d);
     //string bellmanFord(int s,int d);
 };
 
@@ -55,7 +55,7 @@ void Graph::init()
     }
 }
 
-string Graph::djikstra(int s, int d)
+string Graph::dijkstra(int s, int d)
 {
     string printable="Dijkstra Algorithm:\n";
     priority_queue< pair<int,int> , vector<pair<int,int>> , greater<pair<int,int>> > vertexQ;
