@@ -4,13 +4,15 @@ using namespace std;
 class Graph{
 private:
     vector<int> *adj;
+    vector< pair<pair<int,int>, int> > edgeList;
     map < pair<int,int>, int> cost;
-    //priority_queue< pair<int, pair<int,int>> , vector<pair<int, pair<int,int>>> , greater<pair<int, pair<int,int>>> >edgeQ;
     int *distance;
     int *prev;
     int totalVertex;
     int totalEdge;
     int *visited;
+
+    string pathPrint(int s,int d);
 
 public:
     Graph(int v, int e){
@@ -34,22 +36,47 @@ public:
     void init();
 
     string dijkstra(int s, int d);
-    //string bellmanFord(int s,int d);
+    string bellmanFord(int s,int d);
 };
 
+string Graph::pathPrint(int s, int d)
+{
+    stack<int> path;
+    string printable="";
+
+    path.push(d);
+    int x=d;
+
+    while(x!=s){
+        path.push(prev[x]);
+        x=prev[x];
+    }
+
+    int t=path.size();
+
+    for(int i=0; i< t; i++){
+        printable+=to_string(path.top());
+        path.pop();
+        
+        if(path.size()!=0)
+            printable+="->";
+    }
+
+    return printable;
+}
 
 void Graph::setEdge(int v1, int v2, int w)
 {
     adj[v1].push_back(v2);
     cost[{v1,v2}]=w;
 
-    //edgeQ.push({w,{v1,v2}});
+    edgeList.push_back({{v1,v2},w});
 }
 
 void Graph::init()
 {
     for (int i=0; i<totalVertex; i++){
-        distance[i]=2147483645;
+        distance[i]=INT_MAX;
         prev[i]=-1;
         visited[i]=0;
     }
@@ -58,14 +85,14 @@ void Graph::init()
 string Graph::dijkstra(int s, int d)
 {
     string printable="Dijkstra Algorithm:\n";
+    init();
     priority_queue< pair<int,int> , vector<pair<int,int>> , greater<pair<int,int>> > vertexQ;
-    stack<int> path;
 
     distance[s]=0;
     vertexQ.push({distance[s], s});
 
     int u=s;
-    while(u!=d){
+    while(!vertexQ.empty()){
         u= vertexQ.top().second;
         vertexQ.pop();
 
@@ -75,7 +102,7 @@ string Graph::dijkstra(int s, int d)
         visited[u]=1;
 
         for(int x : adj[u]){
-            if(visited[x]==0 && ( distance[x] > (distance[u]+ abs(cost[{u,x}])) ) ){
+            if( distance[x] > (distance[u]+ abs(cost[{u,x}])) ) {
                 distance[x]= distance[u]+ abs(cost[{u,x}]);
                 prev[x]=u;
                 vertexQ.push({distance[x], x});
@@ -85,19 +112,44 @@ string Graph::dijkstra(int s, int d)
 
     printable+=to_string(distance[d])+"\n";
 
-    path.push(d);
-    int x=d;
-    while(x!=s){
-        path.push(prev[x]);
-        x=prev[x];
+    printable+= pathPrint(s,d);
+    cout<<printable;
+
+    return printable;
+}
+
+string Graph::bellmanFord(int s, int d)
+{
+    string printable="Bellman Ford Algorithm:\n";
+    init();
+    distance[s]=0;
+    int u,v,w;
+
+    for(int i=0; i<totalVertex-1;i++){
+        for(int j=0; j<totalEdge; j++){
+            u= edgeList[j].first.first;
+            v= edgeList[j].first.second;
+            w= edgeList[j].second;
+            if( distance[u]!=INT_MAX && distance[v] > distance[u] + w ){
+                distance[v]= distance[u]+w;
+                prev[v]=u;
+            }
+        }
     }
-    int t=path.size();
-    for(int i=0; i< t; i++){
-        printable+=to_string(path.top());
-        path.pop();
-        if(path.size()!=0)
-            printable+=" -> ";
+
+    for(int j=0; j<totalEdge; j++){
+        u= edgeList[j].first.first;
+        v= edgeList[j].first.second;
+        w= edgeList[j].second;
+        if( distance[u]!=INT_MAX && distance[v] > distance[u] + w ){
+            printable+="Negative weight cycle present\n\n";
+            cout<<printable;
+            return printable;
+        }
     }
+    
+    printable+= to_string(distance[d])+"\n";
+    printable+= pathPrint(s,d)+"\n\n";
 
     cout<<printable;
 

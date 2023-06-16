@@ -3,7 +3,7 @@
 using namespace std;
 
 string INPUT_FILE="input.txt";
-string OUTPUT_FILE1="output_SSSP.txt";
+string OUTPUT_FILE1="output.txt";
 int main(){
 
     ifstream in;
@@ -28,8 +28,8 @@ int main(){
     int s,d;
     in>>s>>d;
     //cout<<s<<d;
-    out<<graph.djikstra(s,d);
-    // out2<<graph.kruskal();
+    out<<graph.bellmanFord(s,d);
+    out<<graph.dijkstra(s,d);
 
     in.close();
     out.close();
