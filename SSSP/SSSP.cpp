@@ -3,9 +3,9 @@ using namespace std;
 
 class Graph{
 private:
-    vector<int> *adj;
+    vector<pair<int,int>> *adj;
     vector< pair<pair<int,int>, int> > edgeList;
-    map < pair<int,int>, int> cost;
+    // map < pair<int,int>, int> cost;
     int *distance;
     int *prev;
     int totalVertex;
@@ -21,7 +21,7 @@ public:
         visited= new int [totalVertex];
         distance= new int [totalVertex];
         prev = new int [totalVertex];
-        adj = new vector<int> [totalVertex];
+        adj = new vector<pair<int,int>> [totalVertex];
         init();
     }
 
@@ -57,9 +57,9 @@ string Graph::pathPrint(int s, int d)
     for(int i=0; i< t; i++){
         printable+=to_string(path.top());
         path.pop();
-        
+
         if(path.size()!=0)
-            printable+="->";
+            printable+=" -> ";
     }
 
     return printable;
@@ -67,9 +67,8 @@ string Graph::pathPrint(int s, int d)
 
 void Graph::setEdge(int v1, int v2, int w)
 {
-    adj[v1].push_back(v2);
-    cost[{v1,v2}]=w;
-
+    adj[v1].push_back({v2,w});
+    //cost[{v1,v2}]=w;
     edgeList.push_back({{v1,v2},w});
 }
 
@@ -101,19 +100,26 @@ string Graph::dijkstra(int s, int d)
         
         visited[u]=1;
 
-        for(int x : adj[u]){
-            if( distance[x] > (distance[u]+ abs(cost[{u,x}])) ) {
-                distance[x]= distance[u]+ abs(cost[{u,x}]);
-                prev[x]=u;
-                vertexQ.push({distance[x], x});
+        for(auto x : adj[u]){
+            int v = x.first;
+            int w = x.second;
+            if( distance[u]!=INT_MAX && distance[v] > (distance[u]+ abs(w)) ) {
+                distance[v]= distance[u]+ abs(w);
+                prev[v]=u;
+                vertexQ.push({distance[v], v});
             }
         }
     }
 
-    printable+=to_string(distance[d])+"\n";
+    if(distance[d]==INT_MAX){
+        printable+="INF\n";
+        //cout<<printable;
+        return printable;
+    }
 
+    printable+=to_string(distance[d])+"\n";
     printable+= pathPrint(s,d);
-    cout<<printable;
+    //cout<<printable;
 
     return printable;
 }
@@ -141,17 +147,23 @@ string Graph::bellmanFord(int s, int d)
         u= edgeList[j].first.first;
         v= edgeList[j].first.second;
         w= edgeList[j].second;
+
         if( distance[u]!=INT_MAX && distance[v] > distance[u] + w ){
             printable+="Negative weight cycle present\n\n";
-            cout<<printable;
+            //cout<<printable;
             return printable;
         }
     }
-    
+
+    if(distance[d]==INT_MAX){
+        printable+="INF\n";
+        //cout<<printable;
+        return printable;
+    }
     printable+= to_string(distance[d])+"\n";
     printable+= pathPrint(s,d)+"\n\n";
 
-    cout<<printable;
+    //cout<<printable;
 
     return printable;
 }

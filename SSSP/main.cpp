@@ -27,7 +27,7 @@ int main(){
 
     int s,d;
     in>>s>>d;
-    //cout<<s<<d;
+
     out<<graph.bellmanFord(s,d);
     out<<graph.dijkstra(s,d);
 

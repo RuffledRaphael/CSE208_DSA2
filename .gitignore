@@ -3,9 +3,9 @@
 *.exe
 *.pdf
 *.zip
-/.dist
-/.vscode
-/Testcases
-/practice
-/output
-/2005035
+.dist/
+.vscode/
+Testcases/
+practice/
+output/
+2005035/
