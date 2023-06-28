@@ -15,17 +15,20 @@ int main(){
     in>>V;
     in>>E;
     
-    Graph graph(V,E);
+    Graph graph1(V,E);
+    Graph graph2(V,E);
    
     for(int i=0; i<E; i++){
         int F,S,W;
         in>>F;
         in>>S;
         in>>W;
-        graph.setEdge(F,S,W);        
+        graph1.setEdge(F,S,W);   
+        graph2.setEdge(F,S,W);     
     }
     
-    out<<graph.floydWarshal();
+    out<<graph1.floydWarshal();
+    out<<graph2.matrixMultiplication();
 
     in.close();
     out.close();
