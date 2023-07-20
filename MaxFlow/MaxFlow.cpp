@@ -1,0 +1,196 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+class edge{
+public:
+    int v;
+    int currFlow;
+    int capacity;
+
+    edge(int to,int flow, int cap){
+        v=to;
+        currFlow=flow;
+        capacity=cap;
+        ////cout<<v<<currFlow<<capacity;
+    }
+};
+
+class Graph{
+private:
+    vector<edge> *flowGraph;
+    vector<pair<int,int>> *residualRemaining;
+    int totalVertex;
+    int totalEdge;
+    int *visited;
+    pair<int,int> *prev;
+
+public:
+    Graph(int v, int e){
+        totalVertex= v;
+        totalEdge = e;
+        flowGraph= new vector<edge> [totalVertex];
+        residualRemaining= new vector<pair<int,int>> [totalVertex];
+        visited= new int [totalVertex];
+        prev= new pair<int,int> [totalVertex];
+        //init();
+    }
+
+    ~Graph(){
+        delete[] visited;
+        delete[] prev;
+        delete[] flowGraph;
+        delete[] residualRemaining;
+    }
+
+    void setEdge(int v1, int v2, int f);
+    void init();
+    void makeResidual();
+    int BFS(int src,int dst);
+
+    int maxFlow(int src,int dst);
+
+};
+
+
+void Graph::setEdge(int v1, int v2, int f)
+{   
+    edge edge1(v2,0,f);
+    flowGraph[v1].push_back(edge1);
+    ////cout<<v1<<v2<<f;
+}
+
+void Graph::makeResidual()
+{   
+    for(int i=0; i<totalVertex;i++){
+        residualRemaining[i].clear();
+    }
+
+    int v2;
+    int flow;
+    int capacity;
+    int leftCapacity;
+    for(int i=0; i<totalVertex;i++){
+        for(auto e : flowGraph[i]){
+            v2= e.v;
+            flow=e.currFlow;
+            capacity=e.capacity;
+
+            leftCapacity = capacity-flow;
+            //cout<<" le"<<leftCapacity<<" ";
+            
+            if(leftCapacity!=0)
+                residualRemaining[i].push_back({v2, leftCapacity});
+            if(flow!=0)
+                residualRemaining[v2].push_back({i, flow});
+        }
+    }
+}
+
+int Graph::maxFlow(int src, int dst)
+{
+    int bottleneckSum=0;
+    int bottleneck=-1;
+
+    while(bottleneck!=0){
+        makeResidual();
+        bottleneck= BFS(src,dst);
+        //cout<<"bot"<<bottleneck<<" ";
+        bottleneckSum+= bottleneck;
+    }
+
+    return bottleneckSum;
+}
+
+int Graph::BFS(int src, int dst)
+{
+    int temp;
+    int next;
+    int flow;
+    
+    for(int i=0; i<totalVertex;i++){
+        visited[i]=0;
+        prev[i]={-1,-1};
+    }
+
+    queue<int> q;
+    q.push(src);
+
+    while(q.size()>0){
+        temp=q.front(); 
+        visited[temp]=1;
+        // if(temp==dst)
+        //     break;
+        q.pop();
+
+        for(pair<int,int> e : residualRemaining[temp]){
+            next=e.first;
+            flow=e.second;
+
+            if(visited[next]==0){
+                prev[next]={temp,flow};
+                if(next==dst){
+                    visited[dst]=1;
+                    break;
+                }
+                q.push(next);
+            }
+        }
+    }
+    
+    if(visited[dst]==0){
+        return 0;
+    }
+
+    int min=INT_MAX;
+    
+    int parent=-1;
+    int child=dst;
+    int pathSize=1;
+
+    // for(int i=0; i<totalVertex;i++){
+    //     //cout<< prev[i].first<<prev[i].second<<" ";
+    // }
+
+    while(child!=src){
+        parent= prev[child].first;
+        flow= prev[child].second;
+        //cout<<"f"<<flow;
+        min= (min > flow) ? flow : min;
+        child= parent;
+        pathSize++;
+    }
+
+    //cout<<"p"<<pathSize;
+
+    if(min==INT_MAX){
+        //cout<<" min inf ";
+        return 0;
+    }
+
+    child=dst;
+
+    for(int i=0; i<pathSize-1; i++){
+        ////cout<<child;
+        parent=prev[child].first;
+        flow=prev[child].second;
+        int pos=-1;
+
+        for(auto e: flowGraph[parent]){
+            pos++;
+            if(e.v==child){
+                //cout<<"currF"<<e.currFlow;
+                flowGraph[parent][pos].currFlow+=min;
+                //cout<<flowGraph[parent][pos].currFlow;
+            }
+        }
+        child = parent;
+    }
+    
+    // for(int i=0; i<totalVertex; i++)
+    // for(auto e: flowGraph[i]){
+    //     //cout<<"\n"<<i<<e.v<<e.currFlow;
+    // }
+    
+    return min;
+}
+
