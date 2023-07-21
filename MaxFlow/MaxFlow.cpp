@@ -25,7 +25,7 @@ private:
     pair<int,int> *prev;
 
 public:
-    Graph(int v, int e){
+    Graph(int v, int e=0){
         totalVertex= v;
         totalEdge = e;
         flowGraph= new vector<edge> [totalVertex];
@@ -54,6 +54,8 @@ public:
 
 void Graph::setEdge(int v1, int v2, int f)
 {   
+    if(f==0)
+        return;
     edge edge1(v2,0,f);
     flowGraph[v1].push_back(edge1);
     ////cout<<v1<<v2<<f;
@@ -78,9 +80,10 @@ void Graph::makeResidual()
             leftCapacity = capacity-flow;
             //cout<<" le"<<leftCapacity<<" ";
             
-            if(leftCapacity!=0)
+            if(leftCapacity>0)
                 residualRemaining[i].push_back({v2, leftCapacity});
-            if(flow!=0)
+
+            if(flow>0)
                 residualRemaining[v2].push_back({i, flow});
         }
     }
@@ -89,11 +92,13 @@ void Graph::makeResidual()
 int Graph::maxFlow(int src, int dst)
 {
     int bottleneckSum=0;
-    int bottleneck=-1;
+    int bottleneck=0;
 
-    while(bottleneck!=0){
+    while(true){
         makeResidual();
         bottleneck= BFS(src,dst);
+        if(bottleneck==-1)
+            break;
         //cout<<"bot"<<bottleneck<<" ";
         bottleneckSum+= bottleneck;
     }
@@ -138,7 +143,8 @@ int Graph::BFS(int src, int dst)
     }
     
     if(visited[dst]==0){
-        return 0;
+        //cout<<"unreachable";
+        return -1;
     }
 
     int min=INT_MAX;
@@ -160,10 +166,12 @@ int Graph::BFS(int src, int dst)
         pathSize++;
     }
 
+    if(pathSize==1)
+        return -1;
     //cout<<"p"<<pathSize;
 
     if(min==INT_MAX){
-        //cout<<" min inf ";
+        cout<<" min inf ";
         return 0;
     }
 
@@ -173,14 +181,29 @@ int Graph::BFS(int src, int dst)
         ////cout<<child;
         parent=prev[child].first;
         flow=prev[child].second;
-        int pos=-1;
+        int found =0;
+        int pos=0;
 
         for(auto e: flowGraph[parent]){
-            pos++;
             if(e.v==child){
                 //cout<<"currF"<<e.currFlow;
                 flowGraph[parent][pos].currFlow+=min;
                 //cout<<flowGraph[parent][pos].currFlow;
+                found=1;
+            }
+            pos++;
+        }
+
+        if(found==0){
+            int pos1=0;
+            for(auto e: flowGraph[child]){
+                if(e.v==parent){
+                    //cout<<"currF"<<e.currFlow;
+                    flowGraph[child][pos1].currFlow-=min;
+                    //cout<<flowGraph[parent][pos].currFlow;
+                    found=1;
+                }
+                pos1++;
             }
         }
         child = parent;
