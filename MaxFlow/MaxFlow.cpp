@@ -21,13 +21,15 @@ private:
     vector<pair<int,int>> *residualRemaining;
     int totalVertex;
     int totalEdge;
+    int N;
     int *visited;
     pair<int,int> *prev;
 
 public:
-    Graph(int v, int e=0){
+    Graph(int v, int n,int e=0){
         totalVertex= v;
         totalEdge = e;
+        N=n;
         flowGraph= new vector<edge> [totalVertex];
         residualRemaining= new vector<pair<int,int>> [totalVertex];
         visited= new int [totalVertex];
@@ -41,12 +43,15 @@ public:
         delete[] flowGraph;
         delete[] residualRemaining;
     }
+    
+    vector<int> minCut;
 
     void setEdge(int v1, int v2, int f);
     void init();
     void makeResidual();
     int BFS(int src,int dst);
 
+    void getMinCut(int k,int src);
     int maxFlow(int src,int dst);
 
 };
@@ -59,6 +64,14 @@ void Graph::setEdge(int v1, int v2, int f)
     edge edge1(v2,0,f);
     flowGraph[v1].push_back(edge1);
     ////cout<<v1<<v2<<f;
+}
+
+void Graph::init()
+{
+    for(int i=0; i<totalVertex;i++){
+        visited[i]=0;
+        prev[i]={-1,-1};
+    }
 }
 
 void Graph::makeResidual()
@@ -89,6 +102,41 @@ void Graph::makeResidual()
     }
 }
 
+void Graph::getMinCut(int k,int src=0)
+{
+    makeResidual();
+
+    int temp;
+    int next;
+    int flow;
+    
+    init();
+
+    queue<int> q;
+    q.push(src);
+
+    while(q.size()>0){
+        temp=q.front(); 
+        visited[temp]=1;
+        if(temp < N+1 && temp!= src){
+            minCut.push_back(temp);
+            //cout<<temp<<"pushed ";
+        }
+        q.pop();
+
+        for(pair<int,int> e : residualRemaining[temp]){
+            next=e.first;
+            flow=e.second;
+
+            if(visited[next]==0){
+                prev[next]={temp,flow};
+                q.push(next);
+            }
+        }
+    }
+
+}
+
 int Graph::maxFlow(int src, int dst)
 {
     int bottleneckSum=0;
@@ -112,10 +160,7 @@ int Graph::BFS(int src, int dst)
     int next;
     int flow;
     
-    for(int i=0; i<totalVertex;i++){
-        visited[i]=0;
-        prev[i]={-1,-1};
-    }
+    init();
 
     queue<int> q;
     q.push(src);
@@ -123,8 +168,6 @@ int Graph::BFS(int src, int dst)
     while(q.size()>0){
         temp=q.front(); 
         visited[temp]=1;
-        // if(temp==dst)
-        //     break;
         q.pop();
 
         for(pair<int,int> e : residualRemaining[temp]){
