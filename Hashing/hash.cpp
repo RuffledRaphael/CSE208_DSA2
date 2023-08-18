@@ -131,7 +131,7 @@ public:
                         index1 %= tableSize;
                         probe++;
                         if(probe>tableSize)
-                            return -2;
+                            return -1;
                         temp= table1[index1];
                     }
                 }
@@ -176,7 +176,7 @@ public:
                         index1 %= tableSize;
                         probe++;
                         if(probe>tableSize)
-                            return -2;
+                            return -1;
                         temp= table1[index1];
                     }
                 }
@@ -194,11 +194,11 @@ public:
             }
         }
 
-        return -2;
+        return -1;
     }
 
     void InsertData(string key, int value){
-        if(FindData(key)==-2)
+        if(FindData(key)>0)
             return;
 
         if(collisionMethod=="SC"){

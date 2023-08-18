@@ -19,7 +19,7 @@ int main(){
     out.open("words.txt");
     srand(2005035);
 
-    for(int i=0; i<10000; i++){
+    for(int i=0; i<10100; i++){
         out<<randomWord()<<"\n";
     }
     out.close();
@@ -28,7 +28,10 @@ int main(){
     in.open("words.txt");
 
     string str;
+    cout<<"\nEnter TableSize(N') : ";
     int N=20000;
+    cin>>N;
+    
 
     HashTable hashtable1(N, "SC",1);
     HashTable hashtable2(N, "SC",2);
@@ -41,10 +44,18 @@ int main(){
 
     vector<string> wordslist;
 
-    for(int i=0; i<10000;i++){
+    cout<<"Enter insertion number : ";
+    int insert = 10000;
+    cin>>insert;
+
+    for(int i=0; i<insert;i++){
         in>>str;
         wordslist.push_back(str);
 
+        if(hashtable1.FindData(str)>0 && i>1){
+            i--;
+            continue;
+        }
         // cout<<str;
         hashtable1.InsertData(str,i+1);
         hashtable2.InsertData(str,i+1);
@@ -72,9 +83,17 @@ int main(){
     
 
     double count=0;
-    for(int i=0; count<1000; i++){
-        i+=rand()%18;
-        if(i>10000)
+    int randomizer;
+    cout<<"choose randomizer(8 for tablesize 5k & 18 for tablesize 10k/20k) : ";
+    cin>>randomizer;
+
+    int search;
+    cout<<"Enter search count : ";
+    cin>>search;
+
+    for(int i=0; count<search; i++){
+        i+=rand()%randomizer;
+        if(i>insert)
             break;
 
         //cout<<i<<" ";
@@ -91,7 +110,10 @@ int main(){
         hashtable6.FindData(str);
     }
 
-    cout<<"\nSearch Count: "<<count<<"\n\n";
+    cout<<"\nTable Size(N'): "<<N<<"\n";
+    cout<<"Insert Count :  "<<insert<<"\n";
+    cout<<"Search Count :  "<<count<<"\n\n";
+
     cout<<"Separate chaining hash 1 Collision Count: "<<hashtable1.collisionCount <<" average probe count : "<<hashtable1.probeCount/count<<"\n";
     cout<<"Separate chaining hash 2 Collision Count: "<<hashtable2.collisionCount <<" average probe count : "<<hashtable2.probeCount/count<<"\n\n";
 
@@ -101,6 +123,7 @@ int main(){
     cout<<"Custom probing hash 1 Collision Count: "<<hashtable5.collisionCount <<" average probe count : "<<hashtable5.probeCount/count<<"\n";
     cout<<"Custom probing hash 2 Collision Count: "<<hashtable6.collisionCount <<" average probe count : "<<hashtable6.probeCount/count<<"\n\n";
     
+    in.close();
     return 0;
 
 }
