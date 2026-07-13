@@ -9,8 +9,8 @@
 
 <p align="center">
   <b>Undergraduate lab coursework — Bangladesh University of Engineering and Technology (BUET)</b><br>
-  Implementations of advanced data structures and graph / optimization algorithms, each built from
-  scratch in C++ and driven by file-based I/O.
+  Advanced data structures and the core algorithms of graph theory &amp; combinatorial optimization —
+  shortest paths, spanning trees, network flow, and approximation — each built <b>from scratch</b> in C++.
 </p>
 
 ---
@@ -18,29 +18,62 @@
 ## 📖 About this course
 
 **CSE 208** is the second data-structures-and-algorithms laboratory in the BUET CSE undergraduate
-curriculum, building on CSE 204. It moves into balanced trees, advanced heaps, hashing, and the
-core algorithms of graph theory and combinatorial optimization — shortest paths, spanning trees,
-network flow, and approximation.
+curriculum, building on CSE 204. It moves into balanced trees, mergeable heaps, hashing, and the
+workhorse algorithms of graphs and optimization.
 
-Each assignment folder contains its **problem specification**, the **C++ source**, sample **input /
-output**, and a short **README** describing the approach.
+Every assignment folder is self-contained — it holds the **specification**, the **source code**,
+sample **input / output**, and a short **README** describing the approach.
+
+## 🗺️ Topic map
+
+```mermaid
+flowchart LR
+    A([CSE 208 · DSA II]):::root --> B[Advanced<br/>Structures]:::cat
+    A --> C[Hashing]:::cat
+    A --> D[Graph<br/>Algorithms]:::cat
+    A --> E[Optimization]:::cat
+    B --> B1[AVL Tree]
+    B --> B2[Binomial Heap]
+    C --> C1[Hash Table<br/>chaining vs. probing]
+    D --> D1[MST · Prim / Kruskal]
+    D --> D2[SSSP · Dijkstra / Bellman-Ford]
+    D --> D3[APSP · Floyd-Warshall]
+    D --> D4[Max Flow · Ford-Fulkerson]
+    E --> E1[Approximation · Metric TSP]
+    classDef root fill:#2C3E50,stroke:#1A252F,color:#fff,font-weight:bold;
+    classDef cat fill:#16A085,stroke:#0E6252,color:#fff;
+```
 
 ## 🗂️ Assignments
 
-| Topic | Folder | Highlights |
-|-------|--------|-----------|
-| **AVL Tree** | [`AVL tree`](AVL%20tree) | Self-balancing BST — insert/delete/search with rotations, timing analysis |
-| **Binomial Heap** | [`Binomial Heap`](Binomial%20Heap) | Mergeable heap — union, insert, extract-min, decrease-key |
-| **Hashing** | [`Hashing`](Hashing) | Separate chaining vs. open addressing, collision & probe analysis |
-| **MST** | [`MST`](MST) | Minimum spanning tree via **Prim** and **Kruskal** |
-| **SSSP** | [`SSSP`](SSSP) | Single-source shortest path — **Dijkstra** and **Bellman-Ford** |
-| **APSP** | [`APSP`](APSP) | All-pairs shortest path — **Floyd-Warshall** and matrix-multiplication |
-| **Max Flow** | [`MaxFlow`](MaxFlow) | Ford-Fulkerson max flow + **baseball elimination** application |
-| **Approximation** | [`approximation`](approximation) | Approximation algorithm with empirical approximation-ratio analysis |
+| Topic | Folder | Key idea |
+|-------|--------|----------|
+| **AVL Tree** | [`AVL tree`](AVL%20tree) | Height-balanced BST via LL/RR/LR/RL rotations, with timing analysis |
+| **Binomial Heap** | [`Binomial Heap`](Binomial%20Heap) | Mergeable heap — union by binomial-tree linking, insert, extract-min |
+| **Hashing** | [`Hashing`](Hashing) | Separate chaining vs. open addressing; empirical probe-count analysis |
+| **MST** | [`MST`](MST) | Minimum spanning tree via **Prim** (PQ) and **Kruskal** (union-find) |
+| **SSSP** | [`SSSP`](SSSP) | Single-source shortest paths — **Dijkstra** &amp; **Bellman-Ford** |
+| **APSP** | [`APSP`](APSP) | All-pairs shortest paths — **Floyd-Warshall** &amp; matrix-multiplication |
+| **Max Flow** | [`MaxFlow`](MaxFlow) | Ford-Fulkerson max flow + a **baseball-elimination** application |
+| **Approximation** | [`approximation`](approximation) | MST-based **2-approximation** for metric TSP vs. Held-Karp exact |
+
+## 🎯 A taste of the output
+
+<details open>
+<summary><b>Max Flow — Baseball Elimination</b> (which team is mathematically out?)</summary>
+
+```text
+Detroit is eliminated.
+They can win at most 49 + 27 = 76 games.
+New_York, Boston, Baltimore and Toronto have a total of 278 games.
+They play each other 27 times.
+So on average, each team in this group wins 305/4 = 76.25 games — more than Detroit can reach.
+```
+</details>
 
 ## ⚙️ Building &amp; running
 
-Most assignments read from an input file and write to an output file in the same directory:
+Most assignments read an input file and write an output file in the same directory:
 
 ```bash
 cd MST
@@ -50,8 +83,8 @@ g++ -std=c++17 main.cpp -o main      # tested with g++ 14.2
 
 The exact input/output filenames for each task are listed in that folder's `README.md`.
 
-> Build artifacts (`*.exe`, `.dist/`, `.vscode/`), archives (`*.zip`), and bulky stress-test data are
-> excluded via `.gitignore`.
+> Build artifacts (`*.exe`, `.dist/`, `.vscode/`), archives, and bulky stress-test data are excluded
+> via `.gitignore`.
 
 ## 👤 Author
 
